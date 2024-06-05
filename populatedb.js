@@ -1,15 +1,15 @@
 #! /usr/bin/env node
 
 console.log(
-    'This script populates some test books, authors, genres and bookinstances to your database. Specified database as argument - e.g.: node populatedb "mongodb+srv://cooluser:coolpassword@cluster0.lz91hw2.mongodb.net/local_library?retryWrites=true&w=majority"'
+    'This script populates some test movies, authors, genres and bookinstances to your database. Specified database as argument - e.g.: node populatedb "mongodb+srv://cooluser:coolpassword@cluster0.lz91hw2.mongodb.net/local_library?retryWrites=true&w=majority"'
   );
   
   // Get arguments passed on command line
   const userArgs = process.argv.slice(2);
   
-  const Book = require("./models/book");
+  const Movie = require("./models/movie");
   
-  const books = [];
+  const movies = [];
 
   const mongoose = require("mongoose");
   mongoose.set("strictQuery", false);
@@ -22,7 +22,7 @@ console.log(
     console.log("Debug: About to connect");
     await mongoose.connect(mongoDB);
     console.log("Debug: Should be connected?");
-    await createBooks();
+    await createMoives();
     console.log("Debug: Closing mongoose");
     mongoose.connection.close();
   }
@@ -37,16 +37,16 @@ console.log(
       title: title,
     };
   
-    const book = new Book(bookdetail);
-    await book.save();
-    books[index] = book;
-    console.log(`Added book: ${title}`);
+    const movie = new Movie(bookdetail);
+    await movie.save();
+    movies[index] = movie;
+    console.log(`Added movie: ${title}`);
   }
   
   
   
-  async function createBooks() {
-    console.log("Adding Books");
+  async function createMoives() {
+    console.log("Adding Movies");
     await Promise.all([
       bookCreate(0,
         "The Name of the Wind (The Kingkiller Chronicle, #1)",
