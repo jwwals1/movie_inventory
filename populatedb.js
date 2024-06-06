@@ -32,12 +32,12 @@ console.log(
   // in which the elements of promise.all's argument complete.
   
   
-  async function bookCreate(index, title) {
-    const bookdetail = {
+  async function movieCreate(index, title) {
+    const moviedetail = {
       title: title,
     };
   
-    const movie = new Movie(bookdetail);
+    const movie = new Movie(moviedetail);
     await movie.save();
     movies[index] = movie;
     console.log(`Added movie: ${title}`);
@@ -48,9 +48,9 @@ console.log(
   async function createMoives() {
     console.log("Adding Movies");
     await Promise.all([
-      bookCreate(0,
-        "The Name of the Wind (The Kingkiller Chronicle, #1)",
-        "I have stolen princesses back from sleeping barrow kings. I burned down the town of Trebon. I have spent the night with Felurian and left with both my sanity and my life. I was expelled from the University at a younger age than most people are allowed in. I tread paths by moonlight that others fear to speak of during day. I have talked to Gods, loved women, and written songs that make the minstrels weep.",
+      movieCreate(0,
+        "Furiosa: A Mad Max Saga",
+        "Snatched from the Green Place of Many Mothers, young Furiosa falls into the hands of a great biker horde led by the warlord Dementus. Sweeping through the Wasteland, they come across the Citadel, presided over by the Immortan Joe. As the two tyrants fight for dominance, Furiosa soon finds herself in a nonstop battle to make her way home.I have stolen princesses back from sleeping barrow kings. I burned down the town of Trebon. I have spent the night with Felurian and left with both my sanity and my life. I was expelled from the University at a younger age than most people are allowed in. I tread paths by moonlight that others fear to speak of during day. I have talked to Gods, loved women, and written songs that make the minstrels weep.",
         "9781473211896",
       )
     ]);

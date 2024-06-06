@@ -28,7 +28,7 @@ router.get("/", movie_controller.index);
 // router.post("/book/:id/update", movie_controller.book_update_post);
 
 // GET request for one Book.
-// router.get("/book/:id", movie_controller.book_detail);
+router.get("/movie/:id", movie_controller.movie_detail);
 
 // GET request for list of all Book items.
 router.get("/movies", movie_controller.movie_list);
