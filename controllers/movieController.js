@@ -2,6 +2,7 @@ const Movie = require("../models/movie");
 const asyncHandler = require("express-async-handler");
 
 
+
 exports.index = asyncHandler(async (req, res, next) => {
   // Get details of books, book instances, authors and genre counts (in parallel)
   const [
@@ -31,10 +32,10 @@ exports.movie_list = asyncHandler(async (req, res, next) => {
 // Display detail page for a specific book.
 exports.movie_detail = asyncHandler(async (req, res, next) => {
   // Get details of books, book instances for specific book
-  const [movie, movieInstance] = await Promise.all([
-    // Movie.findById(req.params.id).populate("author").populate("genre").exec(),
-    // movieInstances.find({ movie: req.params.id }).exec(),
-  ]);
+  const [movie] = await Promise.all([
+    Movie.findById(req.params.id)
+    // movieInstance.find({ movie: req.params.id }).exec(),
+  ]); 
 
   if (movie === null) {
     // No results.
@@ -44,6 +45,7 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
   }
 
   res.render("movie_detail", {
+    title: movie.title,
     movie: movie,
     // book_instances: movieInstances,
   });
@@ -52,7 +54,17 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
 
 // Display book create form on GET.
 exports.book_create_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Movie create GET");
+  // Get all authors and genres, which we can use for adding to our book.
+  // const [allAuthors, allGenres] = await Promise.all([
+  //   Author.find().sort({ family_name: 1 }).exec(),
+  //   Genre.find().sort({ name: 1 }).exec(),
+  // ]);
+
+  res.render("book_form", {
+    title: "Create Book",
+    // authors: allAuthors,
+    // genres: allGenres,
+  });
 });
 
 // Handle book create on POST.
