@@ -46,6 +46,7 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
 
   res.render("movie_detail", {
     title: movie.title,
+    summary: req.body.summary,
     movie: movie,
     // book_instances: movieInstances,
   });

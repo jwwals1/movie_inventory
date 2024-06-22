@@ -4,6 +4,9 @@ const Schema = mongoose.Schema;
 
 const MovieSchema = new Schema({
   title: { type: String, required: true }, 
+  summary: { type: String, required: true },
+  director: { type: String, required: true },
+  release_date: { type: String, required: true }
 });
 
 // Virtual for book's URL
