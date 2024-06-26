@@ -1,5 +1,6 @@
 const Movie = require("../models/movie");
 const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
 
 
 
@@ -13,7 +14,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 
   res.render("index", {
     title: "Movie List Home",
-    book_count: numMoives,
+    movie_count: numMoives,
   });
 });
 
@@ -54,24 +55,65 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
 
 
 // Display book create form on GET.
-exports.book_create_get = asyncHandler(async (req, res, next) => {
+exports.movie_create_get = asyncHandler(async (req, res, next) => {
   // Get all authors and genres, which we can use for adding to our book.
-  // const [allAuthors, allGenres] = await Promise.all([
-  //   Author.find().sort({ family_name: 1 }).exec(),
-  //   Genre.find().sort({ name: 1 }).exec(),
-  // ]);
-
-  res.render("book_form", {
-    title: "Create Book",
-    // authors: allAuthors,
-    // genres: allGenres,
+  res.render("movie_form", {
+    title: "Create Movie",
   });
 });
 
+
 // Handle book create on POST.
-exports.book_create_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Movie create POST");
-});
+exports.movie_create_post = [
+  // Validate and sanitize fields.
+  body("title", "Title must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("director", "Director must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("release_date", "Release date must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("summary", "Summary must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  // Process request after validation and sanitization.
+
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    // Create a Movie object with escaped and trimmed data.
+    const movie = new Movie({
+      title: req.body.title,
+      director: req.body.director,
+      release_date: req.body.release_date,
+      summary: req.body.summary,
+    });
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
+
+      res.render("movie_form", {
+        title: "Create Movie",
+        // authors: allAuthors,
+        // genres: allGenres,
+        // book: book,
+        errors: errors.array(),
+      });
+    } else {
+      // Data from form is valid. Save book.
+      await movie.save();
+      res.redirect(movie.url);
+    }
+  }),
+];
+
 
 // Display book delete form on GET.
 exports.book_delete_get = asyncHandler(async (req, res, next) => {

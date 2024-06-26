@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST')
+    div.form-group
+      label(for='title') Title:
+      input#title.form-control(type='text', placeholder='Name of movie' name='title' required value=(undefined===movie ? '' : movie.title) )
+    div.form-group
+      label(for='director') Director:
+      input#director.form-control(type='text', placeholder='Name of director' name='director' required value=(undefined===movie ? '' : movie.director) )
+    div.form-group
+      label(for='release_date') Release Date:
+      input#release_date.form-control(type='text', placeholder='release date' name='release_date' value=(undefined===movie ? '' : movie.release_date) required)
+    div.form-group
+      label(for='summary') Summary:
+      textarea#summary.form-control(placeholder='Summary' name='summary' required)= undefined===movie ? '' : movie.summary
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
