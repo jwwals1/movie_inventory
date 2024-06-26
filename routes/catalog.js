@@ -16,10 +16,10 @@ router.get("/movie/create", movie_controller.movie_create_get);
 router.post("/movie/create", movie_controller.movie_create_post);
 
 // GET request to delete Book.
-// router.get("/movie/:id/delete", movie_controller.movie_delete_get);
+router.get("/movie/:id/delete", movie_controller.movie_delete_get);
 
 // POST request to delete Book.
-// router.post("/movie/:id/delete", movie_controller.movie_delete_post);
+router.post("/movie/:id/delete", movie_controller.movie_delete_post);
 
 // GET request to update Book.
 // router.get("/movie/:id/update", movie_controller.movie_update_get);

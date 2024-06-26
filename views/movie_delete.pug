@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1 Title: #{movie.title}
+    p #[strong Director:] #{movie.director}
+    p #[strong Release date:] #{movie.release_date}
+    p #[strong Summary:] #{movie.summary}
+
+    hr
+    p
+      a(href=movie.url+'/delete') Delete Movie

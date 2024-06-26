@@ -5,7 +5,7 @@ const { body, validationResult } = require("express-validator");
 
 
 exports.index = asyncHandler(async (req, res, next) => {
-  // Get details of books, book instances, authors and genre counts (in parallel)
+  // Get details of movies, movies instances, authors and genre counts (in parallel)
   const [
     numMoives,
   ] = await Promise.all([
@@ -19,7 +19,7 @@ exports.index = asyncHandler(async (req, res, next) => {
 });
 
 
-// Display list of all books.
+// Display list of all movies.
 exports.movie_list = asyncHandler(async (req, res, next) => {
   const allMovies = await Movie.find({}, "title author")
     .sort({ title: 1 })
@@ -30,9 +30,9 @@ exports.movie_list = asyncHandler(async (req, res, next) => {
 });
 
 
-// Display detail page for a specific book.
+// Display detail page for a specific movie.
 exports.movie_detail = asyncHandler(async (req, res, next) => {
-  // Get details of books, book instances for specific book
+  // Get details of movies, movie instances for specific movie
   const [movie] = await Promise.all([
     Movie.findById(req.params.id)
     // movieInstance.find({ movie: req.params.id }).exec(),
@@ -54,16 +54,16 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
 });
 
 
-// Display book create form on GET.
+// Display movie create form on GET.
 exports.movie_create_get = asyncHandler(async (req, res, next) => {
-  // Get all authors and genres, which we can use for adding to our book.
+  // Get all authors and genres, which we can use for adding to our movie.
   res.render("movie_form", {
     title: "Create Movie",
   });
 });
 
 
-// Handle book create on POST.
+// Handle movie create on POST.
 exports.movie_create_post = [
   // Validate and sanitize fields.
   body("title", "Title must not be empty.")
@@ -103,11 +103,11 @@ exports.movie_create_post = [
         title: "Create Movie",
         // authors: allAuthors,
         // genres: allGenres,
-        // book: book,
+        // movie: movie,
         errors: errors.array(),
       });
     } else {
-      // Data from form is valid. Save book.
+      // Data from form is valid. Save movie.
       await movie.save();
       res.redirect(movie.url);
     }
@@ -115,22 +115,48 @@ exports.movie_create_post = [
 ];
 
 
-// Display book delete form on GET.
-exports.book_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Movie delete GET");
+// Display movie delete form on GET.
+exports.movie_delete_get = asyncHandler(async (req, res, next) => {
+  const [movie] = await Promise.all([
+    Movie.findById(req.params.id)
+  ]);
+  if (movie === null) {
+    // No results.
+    res.redirect("/catalog/movies");
+  }
+
+  res.render("movie_delete", {
+    title: "Delete Movie",
+    movie: movie,
+  });
 });
 
 // Handle book delete on POST.
-exports.book_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Movie delete POST");
+exports.movie_delete_post = asyncHandler(async (req, res, next) => {
+  // Assume the post has valid id (ie no validation/sanitization).
+
+  const [movie,] = await Promise.all([
+    Movie.findById(req.params.id),
+  ]);
+
+  if (movie === null) {
+    // No results.
+    res.redirect("/catalog/movies");
+  }
+  {
+    // Delete object and redirect to the list of movies.
+    await Movie.findByIdAndDelete(req.body.id);
+    res.redirect("/catalog/movies");
+  }
 });
 
-// Display book update form on GET.
+
+// Display movie update form on GET.
 exports.book_update_get = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Movie update GET");
 });
 
-// Handle book update on POST.
+// Handle movie update on POST.
 exports.book_update_post = asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Movie update POST");
 });
