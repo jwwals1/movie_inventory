@@ -152,11 +152,72 @@ exports.movie_delete_post = asyncHandler(async (req, res, next) => {
 
 
 // Display movie update form on GET.
-exports.book_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Movie update GET");
+exports.movie_update_get = asyncHandler(async (req, res, next) => {
+  // Get movie, authors and genres for form.
+  const [movie] = await Promise.all([
+    Movie.findById(req.params.id)
+  ]);
+
+  if (movie === null) {
+    // No results.
+    const err = new Error("Movie not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("movie_form", {
+    title: "Update Movie",
+    movie: movie,
+  });
 });
 
+
 // Handle movie update on POST.
-exports.book_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Movie update POST");
-});
+exports.movie_update_post = [
+
+  // Validate and sanitize fields.
+  body("title", "Title must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("director", "Director must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("release_date", "Release date must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("summary", "Summary must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  // Process request after validation and sanitization.
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+
+    // Create a Movie object with escaped/trimmed data and old id.
+    const movie = new Movie({
+      title: req.body.title,
+      director: req.body.director,
+      release_date: req.body.release_date,
+      summary: req.body.summary,
+    });
+    if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
+      res.render("movie_form", {
+        title: "Update Movie",
+        movie: movie,
+      });
+      return;
+    } else {
+      // Data from form is valid. Update the record.
+      const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, movie, {});
+      // Redirect to movie detail page.
+      res.redirect(updatedMovie.url);
+    }
+  }),
+];
+
