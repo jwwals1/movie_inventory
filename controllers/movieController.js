@@ -34,7 +34,7 @@ exports.movie_list = asyncHandler(async (req, res, next) => {
 exports.movie_detail = asyncHandler(async (req, res, next) => {
   // Get details of movies, movie instances for specific movie
   const [movie] = await Promise.all([
-    Movie.findById(req.params.id)
+    Movie.findById(req.params.id).exec()
     // movieInstance.find({ movie: req.params.id }).exec(),
   ]); 
 
@@ -118,11 +118,11 @@ exports.movie_create_post = [
 // Display movie delete form on GET.
 exports.movie_delete_get = asyncHandler(async (req, res, next) => {
   const [movie] = await Promise.all([
-    Movie.findById(req.params.id)
+    Movie.findById(req.params.id).exec()
   ]);
   if (movie === null) {
     // No results.
-    res.redirect("/catalog/movies");
+    res.redirect("/catalog/movies"); 
   }
 
   res.render("movie_delete", {
@@ -204,6 +204,7 @@ exports.movie_update_post = [
       director: req.body.director,
       release_date: req.body.release_date,
       summary: req.body.summary,
+      _id: req.params.id,
     });
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/error messages.
