@@ -135,18 +135,24 @@ exports.movie_delete_get = asyncHandler(async (req, res, next) => {
 exports.movie_delete_post = asyncHandler(async (req, res, next) => {
   // Assume the post has valid id (ie no validation/sanitization).
 
-  const [movie,] = await Promise.all([
-    Movie.findById(req.params.id),
+  const [movie] = await Promise.all([
+    Movie.findById(req.params.id).exec(),
   ]);
 
   if (movie === null) {
     // No results.
     res.redirect("/catalog/movies");
   }
-  {
-    // Delete object and redirect to the list of movies.
-    await Movie.findByIdAndDelete(req.body.id);
-    res.redirect("/catalog/movies");
+  // Book has book_instances. Render in same way as for GET route.
+  // res.render("movie_delete", {
+  //   title: "Delete Movie",
+  //   movie: movie,
+  // });
+  // return;
+  else {
+  // Delete object and redirect to the list of movies.
+  await Movie.findByIdAndDelete(req.body.id);
+  res.redirect("/catalog/movies");
   }
 });
 
