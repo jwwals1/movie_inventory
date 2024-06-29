@@ -4,7 +4,6 @@ const router = express.Router();
 // Require controller modules.
 const movie_controller = require("../controllers/movieController");
 
-/// BOOK ROUTES ///
 
 // GET catalog home page.
 router.get("/", movie_controller.index);

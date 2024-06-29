@@ -5,7 +5,7 @@ const { body, validationResult } = require("express-validator");
 
 
 exports.index = asyncHandler(async (req, res, next) => {
-  // Get details of movies, movies instances, authors and genre counts (in parallel)
+  // Get details of movies
   const [
     numMoives,
   ] = await Promise.all([
@@ -23,7 +23,6 @@ exports.index = asyncHandler(async (req, res, next) => {
 exports.movie_list = asyncHandler(async (req, res, next) => {
   const allMovies = await Movie.find({}, "title author")
     .sort({ title: 1 })
-    // .populate("author")
     .exec();
 
   res.render("movie_list", { title: "Movie List", movie_list: allMovies });
@@ -32,10 +31,9 @@ exports.movie_list = asyncHandler(async (req, res, next) => {
 
 // Display detail page for a specific movie.
 exports.movie_detail = asyncHandler(async (req, res, next) => {
-  // Get details of movies, movie instances for specific movie
+  // Get details of movies
   const [movie] = await Promise.all([
     Movie.findById(req.params.id).exec()
-    // movieInstance.find({ movie: req.params.id }).exec(),
   ]); 
 
   if (movie === null) {
@@ -49,14 +47,12 @@ exports.movie_detail = asyncHandler(async (req, res, next) => {
     title: movie.title,
     summary: req.body.summary,
     movie: movie,
-    // book_instances: movieInstances,
   });
 });
 
 
 // Display movie create form on GET.
 exports.movie_create_get = asyncHandler(async (req, res, next) => {
-  // Get all authors and genres, which we can use for adding to our movie.
   res.render("movie_form", {
     title: "Create Movie",
   });
@@ -101,9 +97,6 @@ exports.movie_create_post = [
 
       res.render("movie_form", {
         title: "Create Movie",
-        // authors: allAuthors,
-        // genres: allGenres,
-        // movie: movie,
         errors: errors.array(),
       });
     } else {
@@ -143,12 +136,6 @@ exports.movie_delete_post = asyncHandler(async (req, res, next) => {
     // No results.
     res.redirect("/catalog/movies");
   }
-  // Book has book_instances. Render in same way as for GET route.
-  // res.render("movie_delete", {
-  //   title: "Delete Movie",
-  //   movie: movie,
-  // });
-  // return;
   else {
   // Delete object and redirect to the list of movies.
   await Movie.findByIdAndDelete(req.body.id);
@@ -159,7 +146,7 @@ exports.movie_delete_post = asyncHandler(async (req, res, next) => {
 
 // Display movie update form on GET.
 exports.movie_update_get = asyncHandler(async (req, res, next) => {
-  // Get movie, authors and genres for form.
+  // Get movie
   const [movie] = await Promise.all([
     Movie.findById(req.params.id)
   ]);
