@@ -8,21 +8,50 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 const catalogRouter = require("./routes/catalog"); //Import routes for "catalog" area of site
+const helmet = require("helmet");
 
 var app = express();
 
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      "script-src": ["'self'", "code.jquery.com", "cdn.jsdelivr.net"],
+    },
+  }),
+);
 
+const RateLimit = require("express-rate-limit");
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
+// Apply rate limiter to all requests
+app.use(limiter);
 
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const mongoDB = "mongodb+srv://joewalsh59:Ottawa1624@cluster0.nlhkyy3.mongodb.net/movie_inventory?retryWrites=true&w=majority&appName=Cluster0";
+
+const dev_db_url =
+  "mongodb+srv://joewalsh59:Ottawa1624@cluster0.nlhkyy3.mongodb.net/movie_inventory?retryWrites=true&w=majority&appName=Cluster0";
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 
 main().catch((err) => console.log(err));
 async function main() {
   await mongoose.connect(mongoDB);
 }
+
+
+// Set up mongoose connection
+// const mongoose = require("mongoose");
+// mongoose.set("strictQuery", false);
+// const mongoDB = "mongodb+srv://joewalsh59:Ottawa1624@cluster0.nlhkyy3.mongodb.net/movie_inventory?retryWrites=true&w=majority&appName=Cluster0";
+
+// main().catch((err) => console.log(err));
+// async function main() {
+//   await mongoose.connect(mongoDB);
+// }
 
 
 // view engine setup
