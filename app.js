@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+require('dotenv').config()
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -33,8 +34,8 @@ app.use(limiter);
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
-const dev_db_url =
-  "mongodb+srv://joewalsh59:Ottawa1624@cluster0.nlhkyy3.mongodb.net/movie_inventory?retryWrites=true&w=majority&appName=Cluster0";
+// const dev_db_url =
+//   "mongodb+srv://joewalsh59:Ottawa1624@cluster0.nlhkyy3.mongodb.net/movie_inventory?retryWrites=true&w=majority&appName=Cluster0";
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
 
 main().catch((err) => console.log(err));
